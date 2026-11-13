@@ -6,7 +6,7 @@ file_path = "data/raw/PPR-ALL/PPR-ALL.csv"
 
 # read the csv file
 # latin1 is needed because utf-8 gave an error
-df = pd.read_csv(file_path, encoding="latin1")
+df = pd.read_csv(file_path, encoding="cp1252")
 
 # check how big the dataset is
 print("Number of rows and columns:")
