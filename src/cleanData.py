@@ -104,3 +104,11 @@ dublin_df["property_type"] = dublin_df["property_description"].apply(get_propert
 
 print("\nProperty types:")
 print(dublin_df["property_type"].value_counts())
+# keep all property type that are not unkown
+dublin_df = dublin_df[
+    dublin_df["property_type"] != "Unknown"
+]
+
+# check the remaining properties
+print("\nProperty types after removing unknown values:")
+print(dublin_df["property_type"].value_counts())
