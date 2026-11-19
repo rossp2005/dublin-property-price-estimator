@@ -85,6 +85,40 @@ def add_property_type(df):
     ].copy()
 
     return df
+def get_postcode(eircode):
+    # check if the eircode is missing
+    if pd.isna(eircode):
+        return "Unknown"
+
+    # clean the eircode and get the first 3 characters
+    postcode = str(eircode).strip().upper()[:3]
+
+    # list of recognised Dublin postcode areas
+    dublin_postcodes = [
+        "D01", "D02", "D03", "D04", "D05", "D06", "D6W",
+        "D07", "D08", "D09", "D10", "D11", "D12",
+        "D13", "D14", "D15", "D16", "D17", "D18",
+        "D20", "D22", "D24"
+    ]
+
+    # check if the postcode is in the Dublin postcode list
+    if postcode in dublin_postcodes:
+        return postcode
+    else:
+        return "Unknown"
+
+
+def add_postcode(df):
+    # create a new postcode column using the eircode
+    df["postcode"] = df["eircode"].apply(get_postcode)
+
+    # remove properties without a recognised Dublin postcode
+    df = df[
+        df["postcode"] != "Unknown"
+    ].copy()
+
+    return df
+
 # run the preprocessing functions
 df = load_data()
 df = clean_basic_data(df)
@@ -99,3 +133,13 @@ print(dublin_df["property_type"].value_counts())
 
 print("\nDate range:")
 print(dublin_df["date_of_sale"].min(), "to", dublin_df["date_of_sale"].max())
+postcode_df = add_postcode(dublin_df)
+
+# check the postcode data
+print("Properties with a Dublin postcode:", len(postcode_df))
+
+print("\nProperties in each postcode:")
+print(postcode_df["postcode"].value_counts().sort_index())
+
+print("\nProperty types:")
+print(postcode_df["property_type"].value_counts())
