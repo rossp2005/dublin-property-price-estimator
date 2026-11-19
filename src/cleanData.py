@@ -73,3 +73,34 @@ print(dublin_df["price"].describe())
 # check missing Dublin data
 print("\nDublin missing values:")
 print(dublin_df.isnull().sum())
+print("\nNot full market price values:")
+print(dublin_df["not_full_market_price"].value_counts())
+
+print("\nVAT exclusive values:")
+print(dublin_df["vat_exclusive"].value_counts())
+
+print("\nProperty description values:")
+print(dublin_df["property_description"].value_counts())
+# remove sales that are not full market price
+dublin_df = dublin_df[
+    dublin_df["not_full_market_price"] == "No"
+]
+
+print("\nDublin rows after removing non market sales:")
+print(dublin_df.shape)
+# create a simpler property type
+def get_property_type(description):
+    description = str(description).lower()
+
+    if "new dwelling" in description:
+        return "New"
+    elif "second-hand" in description:
+        return "Second-Hand"
+    else:
+        return "Unknown"
+
+
+dublin_df["property_type"] = dublin_df["property_description"].apply(get_property_type)
+
+print("\nProperty types:")
+print(dublin_df["property_type"].value_counts())
